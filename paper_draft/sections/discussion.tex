@@ -1,0 +1,23 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\para{Writing quality is solved; grounding is not.} Our most striking finding is the asymmetry between writing quality and factual accuracy. \gptfour produces near-perfect prose regardless of conditioning---coherence is 5.0/5 across all conditions, and plausibility never drops below 4.84. The \nomarket baseline achieves the \emph{highest} plausibility (4.92), writing confidently and persuasively about events that never happened. This suggests that for prospective news generation, the bottleneck is entirely on the \emph{grounding} side: ensuring the model writes about the right future, not improving how it writes.
+
+\para{Forecasting and narration should be separated.} Our results reinforce the finding of \citet{lu2025} that narrative prompting hurts forecast accuracy. The \mcp and \superforecaster conditions---which encourage analytical reasoning---achieve slightly lower accuracy (4.64, 4.76) than \directmarket (4.88), which simply conditions on the outcome. This suggests a clean architectural separation: use calibrated forecasting systems (prediction markets, ensemble models~\citep{aiaforecaster2025}) to determine \emph{what} to write, then use narrative generation to determine \emph{how} to write it. Mixing the two stages risks degrading both.
+
+\para{The specificity--informativeness trade-off.} We observe an inverse relationship between specificity and informativeness across conditions. \directmarket produces the most specific articles (4.92/5) but the least informative (4.28/5), while \superforecaster produces the most informative (5.00/5) but least specific (4.36/5). This suggests a fundamental tension: concrete factual details and broad analytical context compete for limited article space. A practical system could address this by selecting the conditioning strategy based on the target genre---direct conditioning for wire-style news, superforecaster for op-eds and analysis pieces.
+
+\para{Implications for prediction market accessibility.} Prediction markets contain valuable information about the future, but raw probabilities are difficult for general audiences to interpret~\citep{wolfers2004prediction}. Our system demonstrates that this information can be reliably translated into readable narratives. Just as weather forecasts transformed raw meteorological data into actionable reports, market-conditioned news generation could make crowd-forecasted futures accessible to non-specialists.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+\para{LLM-as-judge evaluation.} We use \gptfour to evaluate \gptfour output, which may introduce systematic biases~\citep{zheng2024judging}. The near-ceiling scores on most quality dimensions (4.28--5.0/5) suggest the evaluator may be overly generous, reducing discriminative power. Human evaluation would provide stronger validation and likely reveal finer-grained quality differences.
+
+\para{Resolved events only.} We evaluate on events with known outcomes, which provides ground-truth accuracy measurement but does not capture the system's behavior on genuinely future events. For live prediction markets, the system would condition on probabilities (\eg ``65\% likely'') rather than resolved outcomes, producing more nuanced articles with explicit uncertainty. The quality of such articles remains an open question.
+
+\para{Ceiling effects.} Most quality metrics cluster near 5/5, limiting our ability to distinguish between conditions on dimensions other than accuracy. A more granular rubric (1--10 scale) or human evaluation with finer discrimination would better capture quality differences.
+
+\para{Single model.} We evaluate only \gptfour. Results may differ across model families, and the gap between conditioned and unconditioned generation may vary with model capability. Smaller or less capable models might show quality differences that are masked by \gptfour's uniformly strong writing.
+
+\para{Scale and diversity.} Our evaluation covers 25 events, which, while spanning six domains, may not capture the full range of prediction market topics. Events were selected by trading volume, biasing toward high-profile, well-covered topics where LLMs may already have strong priors.

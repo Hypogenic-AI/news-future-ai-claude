@@ -1,0 +1,8 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented \systemname, the first system to generate full news articles conditioned on prediction market data, and evaluated it across 25 resolved \polymarket events. Our central finding is that market conditioning transforms article accuracy from near-random (1.72/5) to near-perfect (4.64--4.88/5), with effect sizes exceeding Cohen's $d = 2.0$. Writing quality, by contrast, is invariant to conditioning---\gptfour produces professional-grade prose regardless of whether it describes the right future. This asymmetry reveals that for prospective news generation, the open problem is \emph{grounding}, not \emph{narration}.
+
+We also identify distinct quality profiles across conditioning strategies: direct conditioning maximizes factual accuracy, \mcp balances accuracy with analytical depth, and the superforecaster persona maximizes informativeness. These profiles suggest that a practical system should select its conditioning strategy based on the target news genre.
+
+Our work opens several directions for future research. First, evaluating live probability conditioning (using current market prices rather than resolved outcomes) would test the system on genuinely uncertain events. Second, human evaluation is needed to validate LLM-as-judge scores and probe finer quality distinctions. Third, multi-model comparisons and temporal conditioning (generating articles at different time horizons) would broaden the scope of our findings. Finally, studying whether readers find market-conditioned articles more useful than raw probabilities would establish the practical value of translating forecasts into narratives.

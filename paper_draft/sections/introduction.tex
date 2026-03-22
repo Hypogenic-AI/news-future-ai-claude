@@ -1,0 +1,20 @@
+\section{Introduction}
+\label{sec:intro}
+
+What will the news look like tomorrow? Prediction markets aggregate the collective wisdom of thousands of traders into probability estimates for future events~\citep{wolfers2004prediction}, yet a statement like ``Trump has a 62\% chance of winning'' tells a fundamentally different story than a news article describing the political dynamics, coalition shifts, and policy implications of a Trump victory. Large language models (LLMs) can generate compelling narratives, but when asked to write about the future without grounding, they hallucinate freely---defaulting to priors like incumbent advantage rather than reflecting genuine uncertainty.
+
+We address a simple question: \emph{can we combine the calibrated probabilities of prediction markets with the narrative capabilities of LLMs to produce accurate, readable news articles about future events?}
+
+\para{The gap.} A growing body of work explores LLM-based forecasting~\citep{forecastbench2024, aiaforecaster2025, kalshibench2025}, and recent studies demonstrate that market-conditioned prompting improves probability estimation~\citep{mentionmarkets2026}. However, no prior work has systematically evaluated the generation of full news articles conditioned on prediction market data. The forecasting literature focuses on producing \emph{probabilities}; we focus on producing \emph{prose}. Furthermore, \citet{lu2025} show that narrative-style prompting actually \emph{hurts} forecast accuracy, suggesting that forecasting and narrative generation must be treated as separate pipeline stages.
+
+\para{Our approach.} We build \systemname, an end-to-end system that ingests prediction market data from \polymarket and generates prospective news articles using \gptfour under four experimental conditions: unconditioned generation, direct market conditioning, Market-Conditioned Prompting (\mcp)~\citep{mentionmarkets2026}, and a superforecaster persona inspired by~\citet{tetlock2015superforecasting}. We evaluate on 25 resolved events with a combined trading volume of \$12.6 billion, enabling ground-truth accuracy measurement.
+
+\para{Key results.} Market-conditioned articles achieve dramatically higher accuracy than unconditioned generation: 4.64--4.88/5 versus 1.72/5 (Cohen's $d = 2.3$--$2.9$, $p < 0.0001$). Semantic similarity to actual outcomes jumps from 0.20 to 1.00. Meanwhile, writing quality remains uniformly high across all conditions---coherence is 5.0/5 regardless of conditioning. This reveals an important asymmetry: LLMs have already solved the \emph{how to write} problem; the remaining challenge is \emph{what to write about}.
+
+We make the following contributions:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We propose \systemname, the first system to generate full news articles conditioned on prediction market data, and evaluate it across 25 high-volume resolved events spanning six domains.
+    \item We conduct a controlled comparison of four conditioning strategies, finding that market data is essential for accuracy (Cohen's $d > 2.0$) while writing quality is invariant to conditioning.
+    \item We identify distinct quality profiles across strategies---direct conditioning maximizes accuracy (4.88/5), \mcp balances accuracy with informativeness (4.80/5), and the superforecaster persona maximizes analytical depth (5.0/5 informativeness).
+    \item We demonstrate a functional web application that generates prospective news articles from live \polymarket data.
+\end{itemize}

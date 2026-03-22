@@ -1,0 +1,84 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Main Results}
+\label{sec:main_results}
+
+\Tabref{tab:main} presents the main evaluation results across all four conditions. The central finding is stark: market conditioning transforms accuracy from near-random (1.72/5) to near-perfect (4.64--4.88/5), while writing quality remains uniformly high regardless of conditioning.
+
+\begin{table}[t]
+\centering
+\caption{Article quality scores (mean $\pm$ std) across four generation conditions, evaluated over 25 resolved \polymarket events. Best results per metric are \textbf{bolded}. All market-conditioned methods dramatically outperform \nomarket on accuracy and semantic similarity.}
+\label{tab:main}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccr@{}}
+\toprule
+\textbf{Condition} & \textbf{Plausibility} & \textbf{Specificity} & \textbf{Coherence} & \textbf{Informativeness} & \textbf{Accuracy} & \textbf{Sem.\ Sim.} \\
+\midrule
+\nomarket & {\bf 4.92}$\pm$0.27 & {\bf 4.96}$\pm$0.20 & {\bf 5.00}$\pm$0.00 & 4.40$\pm$0.49 & 1.72$\pm$1.48 & 0.20$\pm$0.40 \\
+\directmarket & 4.84$\pm$0.37 & 4.92$\pm$0.27 & {\bf 5.00}$\pm$0.00 & 4.28$\pm$0.45 & {\bf 4.88}$\pm$0.43 & {\bf 1.00}$\pm$0.00 \\
+\mcp & 4.88$\pm$0.32 & 4.72$\pm$0.45 & {\bf 5.00}$\pm$0.00 & 4.80$\pm$0.40 & 4.64$\pm$1.02 & {\bf 1.00}$\pm$0.00 \\
+\superforecaster & 4.88$\pm$0.32 & 4.36$\pm$0.56 & {\bf 5.00}$\pm$0.00 & {\bf 5.00}$\pm$0.00 & 4.76$\pm$0.86 & {\bf 1.00}$\pm$0.00 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\para{Accuracy.} The \nomarket baseline achieves only 1.72/5 accuracy, correctly predicting outcomes for roughly 20\% of events. It defaults to priors---predicting Biden over Trump, Celtics over Thunder, and other ``safe'' but wrong choices. All market-conditioned methods score between 4.64 and 4.88, with \directmarket achieving the highest accuracy.
+
+\para{Semantic similarity.} This metric shows the sharpest contrast: 0.20 for \nomarket versus 1.00 for all conditioned methods. Every market-conditioned article describes the correct outcome; the baseline describes the wrong one four out of five times.
+
+\para{Writing quality.} Plausibility (4.84--4.92), specificity (4.36--4.96), and coherence (5.0) are uniformly high across all conditions. The \nomarket baseline actually achieves the highest plausibility (4.92) and specificity (4.96)---it writes confidently and specifically about the \emph{wrong} future. This confirms that writing quality and factual accuracy are orthogonal capabilities in current LLMs.
+
+\para{Informativeness.} This dimension shows meaningful variation: \superforecaster achieves a perfect 5.0/5, \mcp scores 4.80, and both \nomarket (4.40) and \directmarket (4.28) provide less contextual analysis. The superforecaster persona encourages the model to explain \emph{why} an outcome occurred, not just \emph{what} occurred.
+
+\subsection{Statistical Significance}
+\label{sec:significance}
+
+\Tabref{tab:significance} reports pairwise comparisons between market-conditioned methods and the \nomarket baseline. All accuracy and semantic similarity differences are statistically significant after Bonferroni correction.
+
+\begin{table}[t]
+\centering
+\caption{Statistical comparisons of market-conditioned methods against \nomarket. All reported comparisons survive Bonferroni correction ($\alpha/18 = 0.0028$). Effect sizes (Cohen's $d$) exceed 2.0 for accuracy, indicating very large practical significance.}
+\label{tab:significance}
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Comparison} & \textbf{Metric} & \textbf{$\Delta$} & \textbf{Cohen's $d$} & \textbf{$p$-value} \\
+\midrule
+\directmarket vs.\ \nomarket & Accuracy & +3.16 & 2.89 & $<$0.0001 \\
+\mcp vs.\ \nomarket & Accuracy & +2.92 & 2.30 & $<$0.0001 \\
+\superforecaster vs.\ \nomarket & Accuracy & +3.04 & 2.51 & $<$0.0001 \\
+All conditioned vs.\ \nomarket & Sem.\ Sim. & +0.80 & 2.83 & $<$0.0001 \\
+\superforecaster vs.\ \nomarket & Inform. & +0.60 & 1.73 & 0.0001 \\
+\mcp vs.\ \nomarket & Inform. & +0.40 & 0.89 & 0.0016 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The effect sizes for accuracy are exceptionally large ($d > 2.0$), far exceeding conventional thresholds for ``large'' effects ($d = 0.8$). The informativeness gains from \superforecaster ($d = 1.73$) and \mcp ($d = 0.89$) are also practically significant, though smaller in magnitude.
+
+\subsection{Qualitative Analysis}
+\label{sec:qualitative}
+
+To illustrate the practical impact of market conditioning, we examine the most prominent event in our dataset: the 2024 U.S.\ Presidential Election (\$3.69B trading volume).
+
+\para{\nomarket output.} ``Joe Biden Wins Re-Election in Historic 2024 Presidential Race\ldots Biden has secured a second term, defeating Republican challenger Donald Trump\ldots'' The article is fluent, specific, and completely wrong. The model defaults to an incumbent advantage prior that does not reflect the actual outcome.
+
+\para{\mcp output.} ``Donald Trump Clinches 2024 Presidential Election in Stunning Comeback\ldots Trump's win, confirmed by robust prediction market signals and official tallies from key battleground states\ldots'' The article correctly identifies the winner and provides causal context linking the outcome to prediction market signals and electoral dynamics.
+
+This pattern repeats across the dataset: the baseline generates professionally written articles about a parallel universe, while market-conditioned methods describe what actually happened.
+
+\subsection{Strategy Trade-offs}
+\label{sec:tradeoffs}
+
+Each conditioning strategy occupies a distinct point in the quality space:
+
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{\directmarket}: Highest accuracy (4.88) and specificity (4.92). Best suited for factual reporting where getting the outcome right matters most.
+    \item \textbf{\mcp}: Balanced profile with strong accuracy (4.64) and informativeness (4.80). Best suited for analytical news pieces that explain \emph{why} an outcome occurred.
+    \item \textbf{\superforecaster}: Highest informativeness (5.00) but lower specificity (4.36). The analytical framing produces richer context at the cost of concrete details. Best suited for commentary and long-form analysis.
+\end{itemize}
+
+The slight accuracy gap between \mcp (4.64) and \directmarket (4.88) suggests that the structured reasoning framework occasionally introduces hedging language that confuses the evaluator about clearly resolved outcomes.

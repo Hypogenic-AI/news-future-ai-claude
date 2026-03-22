@@ -1,0 +1,60 @@
+\section{Methodology}
+\label{sec:method}
+
+We describe our two-stage pipeline for generating market-conditioned news articles, the experimental conditions, and the evaluation framework.
+
+\subsection{Data Collection}
+\label{sec:data}
+
+We collect resolved events from the \polymarket Gamma API, the largest prediction market by trading volume. We select the top 25 events by volume to ensure high liquidity and reliable price discovery. \Tabref{tab:events} shows representative events from the dataset.
+
+\begin{table}[t]
+\centering
+\caption{Representative events from the \polymarket dataset. All events are fully resolved with clear outcomes. Total volume across all 25 events is \$12.6 billion.}
+\label{tab:events}
+\small
+\begin{tabular}{@{}lrll@{}}
+\toprule
+\textbf{Event} & \textbf{Volume} & \textbf{Outcome} & \textbf{Domain} \\
+\midrule
+Presidential Election 2024 & \$3.69B & Donald Trump & Politics \\
+NBA Champion & \$1.71B & OKC Thunder & Sports \\
+Super Bowl Champion 2025 & \$1.15B & Eagles & Sports \\
+Champions League Winner & \$1.00B & PSG & Sports \\
+Oscar Best Picture & \$79.0M & The Brutalist & Entertainment \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Events span six domains: politics, sports, entertainment, technology, geopolitics, and economics. For each event, we extract the title, winning outcome (determined by the option with price $> 0.5$ at resolution), market metadata, and trading volume. No events have missing values in core fields.
+
+\subsection{Article Generation}
+\label{sec:generation}
+
+We generate articles using \gptfour with temperature 0.7 and a maximum of 800 tokens (targeting 150--250 word articles). Each event is processed under four experimental conditions:
+
+\para{\nomarket (baseline).} The model receives only the event title and a generic journalist persona prompt. No market data, outcomes, or probabilities are provided. This tests the model's ability to write about future events from its parametric knowledge alone.
+
+\para{\directmarket.} The model receives the event title, the resolved outcome, and market details (trading volume, number of traders). The prompt instructs the model to write a news article reporting the outcome as fact.
+
+\para{\mcp.} We adapt the Market-Conditioned Prompting framework of \citet{mentionmarkets2026} from probability estimation to narrative generation. The prompt includes the same market data as \directmarket but adds structured instructions for causal reasoning: the model must explain \emph{why} the outcome occurred, what factors contributed, and what implications follow. This encourages analytical depth beyond simple outcome reporting.
+
+\para{\superforecaster persona.} Inspired by Tetlock's superforecasting framework~\citep{tetlock2015superforecasting} and its effectiveness in LLM prompting~\citep{aiaugmented2024, promptforecasting2025}, this condition instructs the model to adopt the persona of an expert forecaster. The prompt emphasizes probabilistic reasoning, base rate consideration, and evidence weighing, while still producing a news-style article.
+
+\subsection{Evaluation Framework}
+\label{sec:evaluation}
+
+We evaluate generated articles using an LLM-as-judge framework~\citep{zheng2024judging}, a standard approach for open-ended text quality assessment. \gptfour serves as the evaluator with temperature 0.1 for consistency.
+
+\para{Quality dimensions.} Each article is scored on five dimensions using a 1--5 scale:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Plausibility}: How believable is the article as real news?
+    \item \textbf{Specificity}: How detailed are the claims (names, dates, numbers)?
+    \item \textbf{Coherence}: Is the article internally consistent and well-structured?
+    \item \textbf{Informativeness}: Does it provide context beyond restating the outcome?
+    \item \textbf{Accuracy}: Does the article match the actual event outcome?
+\end{itemize}
+
+\para{Semantic similarity.} For each article, the evaluator rates alignment with the actual outcome on a 0--1 scale. This provides a binary-like measure of whether the article describes the correct future.
+
+\para{Statistical analysis.} We use paired $t$-tests for pairwise condition comparisons, report Cohen's $d$ for effect sizes, and apply Bonferroni correction for multiple comparisons ($\alpha / 18 = 0.0028$ for 18 pairwise tests). We report means with standard deviations across the 25 events.

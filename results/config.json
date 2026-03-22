@@ -1,0 +1,13 @@
+{
+  "model": "gpt-4.1",
+  "n_events": 25,
+  "conditions": [
+    "no_market",
+    "direct_market",
+    "mcp",
+    "superforecaster"
+  ],
+  "seed": 42,
+  "timestamp": "2026-03-22T10:23:42.568273",
+  "python_version": "3.12.8 (main, Dec 19 2024, 14:33:20) [Clang 18.1.8 ]"
+}
