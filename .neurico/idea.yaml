@@ -1,0 +1,21 @@
+idea:
+  title: News from the Future
+  domain: artificial_intelligence
+  hypothesis: 'Combining large language models (LLMs) with prediction markets can
+    generate plausible news articles about future events.
+
+    '
+  background:
+    description: 'There should be a website that uses LLMs + prediction markets to
+      write news from the future.
+
+      '
+  metadata:
+    author: Ari Holtzman
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/WZ38WaQ3Wlots6yIRzUY
+    idea_id: news_from_the_future_20260322_095528_11ce1807
+    created_at: '2026-03-22T09:55:28.232787'
+    status: submitted
+    github_repo_name: news-future-ai-claude
+    github_repo_url: https://github.com/Hypogenic-AI/news-future-ai-claude
